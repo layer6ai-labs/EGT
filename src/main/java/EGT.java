@@ -19,7 +19,20 @@ public class EGT {
 		KNN
 	}
 
+	static void logo() {
+		System.out.println("\n.____                                  ________");
+		System.out.println("|    |   _____  ___.__. ___________   /  _____/");
+		System.out
+				.println("|    |   \\__  \\<   |  |/ __ \\_  __ \\ /   __  \\");
+		System.out.println(
+				"|    |___ / __ \\\\___  \\  ___/|  | \\/ \\  |__\\  \\");
+		System.out.println("|_______ (____  / ____|\\___  >__|     \\_____  /");
+		System.out.println(
+				"        \\/    \\/\\/         \\/               \\/\n");
+	}
+
 	public static void main(String[] args) throws IOException {
+		logo();
 		ArgumentParser parser = ArgumentParsers.newFor("EGT").build()
 				.description(
 						"Runst the EGT image retrieval algorithm, for more information see our CVPR 2019 paper \"Explore-Exploit Graph Traversal for Image Retrieval\" .");
