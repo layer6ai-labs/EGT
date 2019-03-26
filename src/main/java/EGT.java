@@ -1,4 +1,5 @@
 import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -29,9 +30,10 @@ public class EGT {
 		parser.addArgument("--skip").metavar("f").type(int.class).setDefault(0)
 				.help("Number of header lines to skip");
 		parser.addArgument("--silent").dest("silent").setDefault(false)
+				.action(Arguments.storeTrue())
 				.help("Number of header lines to skip");
-		parser.addArgument("--k").dest("k").type(int.class)
-				.setDefault(50).help("k: number of neighbor in kNN");
+		parser.addArgument("--k").dest("k").type(int.class).setDefault(50)
+				.help("k: number of neighbor in kNN");
 		parser.addArgument("--nq").metavar("nQ").dest("numQuery")
 				.type(int.class).setDefault(70).help("nQ: number of query");
 		try {
