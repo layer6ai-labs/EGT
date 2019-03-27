@@ -33,38 +33,61 @@ public class EGT {
 
 	public static void main(String[] args) throws IOException {
 		logo();
+
 		ArgumentParser parser = ArgumentParsers.newFor("EGT").build()
 				.description(
-						"Runst the EGT image retrieval algorithm, for more information see our CVPR 2019 paper \"Explore-Exploit Graph Traversal for Image Retrieval\" .");
+						"EGT image retrieval algorithm.\nSee our CVPR 2019 paper \"Explore-Exploit Graph Traversal for Image Retrieval\".\n"
+								+ "For updates and more, check out our github page https://github.com/layer6ai-labs/egt.")
+				.defaultHelp(true);
+
+		// positional
 		parser.addArgument("input file").metavar("srcFile").type(String.class)
-				.help("Source file path").dest("clusterFile");
+				.help("source file path").dest("srcFile");
 		parser.addArgument("output file").metavar("outFile").type(String.class)
-				.help("Output file path").dest("outFile");
-		parser.addArgument("--skip").metavar("f").type(int.class).setDefault(0)
-				.help("Number of header lines to skip");
+				.help("output file path").dest("outFile");
+
+		// model parameter
+		parser.addArgument("-k").metavar("k").dest("k").type(int.class)
+				.setDefault(50).help("[int] number of neighbor in kNN");
+
+		parser.addArgument("-q").metavar("numQuery").dest("numQuery")
+				.type(int.class).setDefault(70).help("[int] number of query");
+
+		parser.addArgument("-p").metavar("shortlist").dest("p").type(int.class)
+				.setDefault(1000)
+				.help("[int] number top results to apply algorithm (p in paper)");
+
+		parser.addArgument("-t").metavar("tau").dest("thresh")
+				.type(double.class).setDefault(40.0)
+				.help("[float] threshold parameter tau");
+
+		parser.addArgument("-H").metavar("header").dest("header")
+				.type(int.class).setDefault(0).required(false)
+				.help("number of header lines to skip");
+
+		// model flags
+		parser.addArgument("--sym").dest("symmetry").setDefault(true)
+				.required(false).action(Arguments.storeTrue())
+				.help("make kNN graph symmetric");
 		parser.addArgument("--silent").dest("silent").setDefault(false)
-				.action(Arguments.storeTrue())
-				.help("Number of header lines to skip");
-		parser.addArgument("--k").dest("k").type(int.class).setDefault(50)
-				.help("k: number of neighbor in kNN");
-		parser.addArgument("--nq").metavar("nQ").dest("numQuery")
-				.type(int.class).setDefault(70).help("nQ: number of query");
+				.required(false).action(Arguments.storeTrue())
+				.help("number of header lines to skip");
 		try {
 			Namespace res = parser.parseArgs(args);
-			final String clusterFile = res.getString("clusterFile");
+			final String clusterFile = res.getString("srcFile");
 			final String outFile = res.getString("outFile");
-			final int skip = res.getInt("skip");
+			final int skip = res.getInt("header");
 			final boolean silent = res.getBoolean("silent");
 			final int k = res.getInt("k");
+			final int N = res.getInt("p");
 			final int nQ = res.getInt("numQuery");
+			final boolean MAKE_SYMMETRIC = res.getBoolean("symmetry");
+			final double thresh = res.getDouble("thresh");
 
 			// TODO: change to argparse
 			final boolean SILENT = false;
 			final ALGO PRIM = ALGO.EGT;
 			final boolean SORT_BY_RANSAC = false;
-			final int thresh = 40;
-			int N = 1000;
-			boolean MAKE_SYMMETRIC = true;
 
 			EGTImpl egtSource = EGTImpl.readClusters(clusterFile, skip, silent);
 			Speedometer timer = Speedometer.generalTimer().tic();
@@ -94,7 +117,7 @@ public class EGT {
 			//		for (int thresh : new int[]{thresh}) {
 			if (SILENT == false)
 				System.out
-						.printf("\nRUNNING src[%s] prim[%s] make_sym[%b] sort_by_ransac[%b] thresh[%d] k[%d] N[%d]\n",
+						.printf("\nRUNNING src[%s] prim[%s] make_sym[%b] sort_by_ransac[%b] thresh[%f] k[%d] N[%d]\n",
 								clusterFile, PRIM.name(), MAKE_SYMMETRIC,
 								SORT_BY_RANSAC, thresh, k, N);
 			else
