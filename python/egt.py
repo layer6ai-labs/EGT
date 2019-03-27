@@ -52,6 +52,7 @@ def generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN
             score = int(sim[sim_top[j, i], i] * 1000000)  # discretize to 6 digit int
             file_stream.write(X_hashes[sim_top[j, i]] + " " + str(score) + " ")
         file_stream.write("\n")
+        file_stream.flush()
     file_stream.close()
 
 
@@ -73,7 +74,7 @@ def main():
     parser.add_argument('--index_features', type=str, help='numpy file location of index features', required=True)
     parser.add_argument('--query_hashes', type=str, help='file location of query features', required=True)
     parser.add_argument('--index_hashes', type=str, help='file location of index features', required=True)
-    parser.add_argument('--Do_QE', type=bool, help='whether to do QE', required=True)
+    parser.add_argument('--Do_QE', type=str, help='whether to do QE', default=False, required=True)
     parser.add_argument('--QE_topN', type=int, help='number of elemenets to QE with. Default=2', default=2)
     parser.add_argument('--Num_candidates', type=int, help='number of candidates to retrieve', required=True)
     parser.add_argument('--OutputFile', type=str, help='file location for prebuild file', required=True)
@@ -84,7 +85,13 @@ def main():
     X_features = load_npy(args.index_features)
     Q_hashes = load_hashes(args.query_hashes)
     X_hashes = load_hashes(args.index_hashes)
-    Do_QE = args.Do_QE
+    if args.Do_QE == "True":
+        Do_QE = True
+    elif args.Do_QE == "False":
+        Do_QE = False
+    else:
+        raise ValueError('Not a valid boolean string')
+    #Do_QE = args.Do_QE
     QE_topN = args.QE_topN
     Num_candidates = args.Num_candidates
     OutputFile = args.OutputFile
