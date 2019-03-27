@@ -6,21 +6,26 @@ import argparse
 
 DATA_PATH = '../data/evaluation/data/'
 
-def read_file(prebuild):
+def read_file(prebuild, skip):
     f = open(prebuild, "r")
     lines = [line[:-1] for line in f.readlines()]
+    lines = lines[skip:]
+    f.close()
+    return lines
+
+
+def get_order(index_hashes):
+    name2order = {}
+    f = open(index_hashes, "r")
+    hashes = [line[:-1] for line in f.readlines()]
     f.close()
     name2order = {}
-    for i in range(len(lines)):
-        q = lines[i].split(",")[0]
-        name2order[q] = i
-        sys.stdout.write("\rscanning file for the order: [" + str(i+1) + "/" + str(len(lines)) + "]")
-        sys.stdout.flush()
-    sys.stdout.write("\n")
-    return lines, name2order
+    for i in range(len(hashes)):
+        name2order[hashes[i]] = i
+    return name2order
 
 
-def evaluate_prebuild(prebuild, evaluate, num_query, num_score):
+def evaluate_prebuild(prebuild, index_hashes, evaluate, num_query, num_score, skip):
     # evaluating the prebuild file
     # the format of the prebuild file should be something like:
     # query1, index score1 score2 ... index score1 score2
@@ -31,7 +36,8 @@ def evaluate_prebuild(prebuild, evaluate, num_query, num_score):
     from revop import init_revop, eval_revop
     cfg = init_revop(evaluate, "../data/evaluation/data/")
 
-    lines, name2order = read_file(prebuild)
+    lines = read_file(prebuild, skip)
+    name2order = get_order(index_hashes)
     
     rankings = []
     for i in range(num_query):
@@ -41,7 +47,7 @@ def evaluate_prebuild(prebuild, evaluate, num_query, num_score):
         order = []
         for j in range(0, len(cands), num_score+1): # working for 0-x scores
             c = cands[j]
-            order.append(name2order[c] - num_query)
+            order.append(name2order[c])
         rankings.append(order)
     
     rankings = np.array(rankings)
@@ -54,9 +60,11 @@ def evaluate_prebuild(prebuild, evaluate, num_query, num_score):
 def main():
     parser = argparse.ArgumentParser(description='Evaluate the revop of a given prebuild file')
     parser.add_argument('--f', type=str, help='prebuild file to be evaluated', required=True)
+    parser.add_argument('--index_hashes', type=str, help='file location of index hashes', required=True)
     parser.add_argument('--num_query', type=int, help='Number of queries', required=True)
     parser.add_argument('--num_score', type=int, help='number of scores per pair', default=2, required=True)
     parser.add_argument('--evaluate', type=str, help='evaluate the result for prebuild file. Either roxford5k or rparis6k', required=True)
+    parser.add_argument('--skip', type=int, help='number of header lines to skip', default=0)
     args = parser.parse_args()
 
     if args.evaluate is not None:
@@ -70,7 +78,9 @@ def main():
     num_query = args.num_query
     num_score = args.num_score
     evaluate = args.evaluate
-    evaluate_prebuild(f, evaluate, num_query, num_score)
+    skip = args.skip
+    index_hashes = args.index_hashes
+    evaluate_prebuild(f, index_hashes, evaluate, num_query, num_score, skip)
 
 if __name__ == "__main__":
     main()
