@@ -21,7 +21,7 @@ def QE(Q, X, k=5, Skip_self=False):
     return Qexp
 
 
-def generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN, Num_candidates, OutputFile):
+def generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN, Num_candidates, evaluate, OutputFile):
     # Q_features: Query features, Numpy array of shape=(feature_dim, num_queries)
     # X_features: index features, Numpy array of shape=(feature_dim, num_index)
     # Q_hashes: query hashes to write in output File. list of size num_queries
@@ -41,6 +41,12 @@ def generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN
     sim = np.matmul(X_features.T, f)
     sim_top = np.argsort(-sim, axis=0) # need order, so not argpartition, but argsort
     
+    if evaluate is not None:
+        from revop import init_revop, eval_revop
+        cfg = init_revop(evaluate, "../data/evaluation/data/")
+        score = eval_revop(sim_top[:Num_candidates, :Q_features.shape[1]]) # downsize it to be the same as the prebuild file
+        print("Map H: {:.2f}".format(score))
+
     # write them into the output file
     print("Start writing into file ---> " + str(OutputFile))
     file_stream = open(OutputFile, "w")
@@ -78,6 +84,7 @@ def main():
     parser.add_argument('--Do_QE', type=str, help='whether to do QE', default=False, required=True)
     parser.add_argument('--QE_topN', type=int, help='number of elemenets to QE with. Default=2', default=2)
     parser.add_argument('--Num_candidates', type=int, help='number of candidates to retrieve', required=True)
+    parser.add_argument('--evaluate', type=str, help='whether to evaluate the result for prebuild file. Either roxford5k or rparis6k')
     parser.add_argument('--OutputFile', type=str, help='file location for prebuild file', required=True)
     args = parser.parse_args()
 
@@ -95,20 +102,25 @@ def main():
     else:
         X_hashes = [str(i+len(Q_hashes)) for i in range(X_features.shape[1])]
 
+    if args.evaluate is not None:
+        if args.evaluate not in ['roxford5k', 'rparis6k']:
+            raise ValueError('Not a valid boolean string. Possible input: {roxford5k, rparis6k}')
+
     # check if QE needs to be done
     if args.Do_QE == "True":
         Do_QE = True
     elif args.Do_QE == "False":
         Do_QE = False
     else:
-        raise ValueError('Not a valid boolean string')
+        raise ValueError('Not a valid boolean string. Possible input: {True, False}')
     #Do_QE = args.Do_QE
     QE_topN = args.QE_topN
+    evaluate = args.evaluate
     Num_candidates = args.Num_candidates
     OutputFile = args.OutputFile
 
     # generate prebuild
-    generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN, Num_candidates, OutputFile)
+    generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN, Num_candidates, evaluate, OutputFile)
 
 
 if __name__ == "__main__":
