@@ -9,14 +9,14 @@ def QE(Q, X, k=5, Skip_self=False):
     # skip_self: for Q=X, and want to skip self during query expansion
 
     sim = np.matmul(X.T, Q)
-    if Skip_self:
-        k += 1 #get the next one
+    #if Skip_self:
+    #    k += 1 #get the next one
     sim_top = np.argpartition(sim, -k, 0)[-k:, :]
     Qexp = np.array([(np.sum(X[:,top[:k]],axis=1)+query) for query,top in zip(Q.T, sim_top.T)]).T
 
     # if skip_first, assume one of candidate is equal to self, so remove it
-    if Skip_self:
-        Qexp -= Q
+    #if Skip_self:
+    #    Qexp -= Q
     Qexp = Qexp / np.linalg.norm(Qexp,ord=2, axis=0)
     return Qexp
 
@@ -42,13 +42,14 @@ def generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN
     sim_top = np.argsort(-sim, axis=0) # need order, so not argpartition, but argsort
     
     # write them into the output file
+    print("Start writing into file ---> " + str(OutputFile))
     file_stream = open(OutputFile, "w")
     for i in range(sim_top.shape[1]):
         if i < len(Q_hashes):
             file_stream.write(Q_hashes[i] + ",")
         else:
             file_stream.write(X_hashes[i - len(Q_hashes)] + ",")
-        for j in range(sim_top.shape[0]):
+        for j in range(min(Num_candidates, sim_top.shape[0])):
             score = int(sim[sim_top[j, i], i] * 1000000)  # discretize to 6 digit int
             file_stream.write(X_hashes[sim_top[j, i]] + " " + str(score) + " ")
         file_stream.write("\n")
@@ -72,8 +73,8 @@ def main():
     parser = argparse.ArgumentParser(description='Create a prebuild file for EGT from features')
     parser.add_argument('--query_features', type=str, help='numpy file location of query features', required=True)
     parser.add_argument('--index_features', type=str, help='numpy file location of index features', required=True)
-    parser.add_argument('--query_hashes', type=str, help='file location of query features', required=True)
-    parser.add_argument('--index_hashes', type=str, help='file location of index features', required=True)
+    parser.add_argument('--query_hashes', type=str, help='file location of query features')
+    parser.add_argument('--index_hashes', type=str, help='file location of index features')
     parser.add_argument('--Do_QE', type=str, help='whether to do QE', default=False, required=True)
     parser.add_argument('--QE_topN', type=int, help='number of elemenets to QE with. Default=2', default=2)
     parser.add_argument('--Num_candidates', type=int, help='number of candidates to retrieve', required=True)
@@ -83,8 +84,18 @@ def main():
     # load all the required data
     Q_features = load_npy(args.query_features)
     X_features = load_npy(args.index_features)
-    Q_hashes = load_hashes(args.query_hashes)
-    X_hashes = load_hashes(args.index_hashes)
+
+    # if hash is not given, use 0-num_queries for queries and num_queries-end for indexes
+    if args.query_hashes:
+        Q_hashes = load_hashes(args.query_hashes)
+    else:
+        Q_hashes = [str(i) for i in range(Q_features.shape[1])]
+    if args.index_hashes:
+        X_hashes = load_hashes(args.index_hashes)
+    else:
+        X_hashes = [str(i+len(Q_hashes)) for i in range(X_features.shape[1])]
+
+    # check if QE needs to be done
     if args.Do_QE == "True":
         Do_QE = True
     elif args.Do_QE == "False":
