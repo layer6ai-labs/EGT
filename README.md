@@ -16,7 +16,6 @@ For research and development on top of EGT, see `src/main/java/EGT.java` on how 
 
 
 
-#####################################################
 
 Example to generate a "prebuild" file from embedding:
 
@@ -37,4 +36,3 @@ To evaluate a file with one header line:
 
     ```bash
     python evaluate_prebuild.py --f ../test.txt --index_hashes index_hashes.txt --num_query 70 --num_score 0 --evaluate roxford5k --skip 1```
-#####################################################
