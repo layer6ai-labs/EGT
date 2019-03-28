@@ -10,7 +10,7 @@ Given global latent descriptors generated for a database of image (e.g. [R-MAC](
 
 
 ## Dataset and Environment
-* EGT requires java 1.8
+* EGT requires Java 8+
 * Graph generation and evaluation script is tested for Python 3.5
 * For ROxford and RParis, please obtain dataset and evaluation code from https://github.com/filipradenovic/revisitop
 * Download from https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz to get the evaluation data
@@ -33,6 +33,7 @@ Inner product is computed and the results are sorted. The format of this file is
 
 <qid>,<id> <weight> <id> <weight> ... <id> <weight>
 ```
+* When the kNN graph is generated, the queries are placed at the top of the output prebuild file. We do not let other images (query or index) see the query images as this is required for online inference.
 * Example to generate a "prebuild" file from embedding:
     ```
     cd python
@@ -44,6 +45,13 @@ Inner product is computed and the results are sorted. The format of this file is
     ```
     
 ## EGT
+* The proposed EGT algorithm is written in Java. We have provided an executable jar that you can run. The EGT program takes the prebuild as the source file, and output a similar file with the final ranking only for the query rows.
+```
+<qid>,<id> <id> ... <id>
+<qid>,<id> <id> ... <id>
+...
+<qid>,<id> <id> ... <id>
+```
 
 * Execute EGT program jar with
 ` java -jar target/egt.jar`
