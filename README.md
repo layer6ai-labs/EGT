@@ -9,6 +9,8 @@ For executable jar, compile with
 Execute jar with
 ` java -jar target/egt.jar`
 
+Download from https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz to get the evaluation data
+
 For graph generation and evaluation, see python folder.
 For research and development on top of EGT, see `src/main/java/EGT.java` on how to execute `EGTImpl` directly.
 
