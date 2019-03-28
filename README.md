@@ -52,6 +52,7 @@ Inner product is computed and the results are sorted. The format of this file is
 ...
 <qid>,<id> <id> ... <id>
 ```
+* We provide options to experiment with k (kNN param), tau (threshold for explore/exploit), and p (shortlist to re-rank) as in the paper. Additionally, there is a flag to make the graph symmetric. For symmetric graph, we skip the query rows to keep the inference online by preventing the existing query and index descriptors from seeing other query descriptors as neighbors due to symmetry. Note that within the prebuild file, our script never uses other query as neighbors for any image.
 
 * Execute EGT program jar with
 ` java -jar target/egt.jar`
