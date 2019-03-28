@@ -72,6 +72,9 @@ public class EGT {
 		parser.addArgument("--silent").dest("silent").setDefault(false)
 				.required(false).action(Arguments.storeTrue())
 				.help("number of header lines to skip");
+		parser.addArgument("--time").dest("time").setDefault(false)
+				.required(false).action(Arguments.storeTrue())
+				.help("Whether to time it or not");
 		try {
 			Namespace res = parser.parseArgs(args);
 			final String clusterFile = res.getString("srcFile");
@@ -83,6 +86,7 @@ public class EGT {
 			final int nQ = res.getInt("numQuery");
 			final boolean MAKE_SYMMETRIC = res.getBoolean("symmetry");
 			final double thresh = res.getDouble("thresh");
+            final boolean time = res.getBoolean("time");
 
 			// TODO: change to argparse
 			final boolean SILENT = false;
@@ -123,6 +127,7 @@ public class EGT {
 			else
 				//			System.out.printf("(%d,", PRINT_FOR_PGF_VAR_K ? k : thresh);
 				timer.tic();
+            double[] timeEachQ = new double[queryLines.size()];
 			try (BufferedWriter writer = new BufferedWriter(
 					new FileWriter(outFile))) {
 				writer.write("id,images\n");
@@ -132,8 +137,10 @@ public class EGT {
 					String[] queryParts = queryLine.split(",", 2);
 					String hashQ = queryParts[0];
 					int[] nodes = null;
-					switch (PRIM) {
 
+                    Speedometer queryTimer = Speedometer.generalTimer();
+                    queryTimer.tic();
+					switch (PRIM) {
 						case EGT:
 							nodes = egt.primPaperEfficient(i, N, thresh, true);
 							break;
@@ -145,6 +152,10 @@ public class EGT {
 						//					EGT.MMSTNode[] test = egt.primPaper(i, k, nToRetrieve, thresh, online);
 						//					System.out.printf("[WARN] did not reach nToRetrieve, len(nodes)=" + Integer.toString(nodes.length));
 					}
+                    if (time){
+                        double t = queryTimer.tocAndTic("finished " + String.valueOf(i+1) + " query");
+                        timeEachQ[i] = t;
+                    }
 
 					StringBuilder sb = new StringBuilder();
 					sb.append(hashQ);
@@ -172,6 +183,20 @@ public class EGT {
 					}
 				}
 			}
+            if (time){
+                double sum = 0.0;
+			    double standardDeviation = 0.0;
+			    for (int i=0; i<timeEachQ.length; i++) {
+			    	sum += timeEachQ[i];
+			    }
+			    double mean = sum / timeEachQ.length;
+			    for(double num: timeEachQ) {
+			    	standardDeviation += Math.pow(num - mean, 2);
+			    }
+			    standardDeviation = Math.sqrt(standardDeviation/timeEachQ.length);
+			    System.out.println("Avearge time per query: " + String.valueOf(mean));
+			    System.out.println("Std time per query: " + String.valueOf(standardDeviation));
+            }
 			if (!SILENT)
 				timer.tocAndTic("prim");
 			if (!SILENT)
