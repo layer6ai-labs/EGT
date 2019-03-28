@@ -1,4 +1,4 @@
-# egt
+# Explore-Exploit Graph Traversal for Image Retrieval
 Code for CVPR2019 paper: Explore-Exploit Graph Traversal for Image Retrieval
 
 ## Prerequisite
