@@ -23,6 +23,16 @@ def eval_revop(p):
     # evaluate ranks
     ks = [1, 5, 10]
 
+    # search for easy & hard
+    gnd_t = []
+    for i in range(len(gnd)):
+        g = {}
+        g['ok'] = np.concatenate([gnd[i]['easy'], gnd[i]['hard']])
+        g['junk'] = np.concatenate([gnd[i]['junk']])
+        gnd_t.append(g)
+    mapM, _, _, _ = compute_map(p, gnd_t, ks)
+
+
     # search for hard
     gnd_t = []
     for i in range(len(gnd)):
@@ -31,7 +41,7 @@ def eval_revop(p):
         g['junk'] = np.concatenate([gnd[i]['junk'], gnd[i]['easy']])
         gnd_t.append(g)
     mapH, _, _, _ = compute_map(p, gnd_t, ks)
-    return np.around(mapH*100, decimals=2)
+    return np.around(mapH*100, decimals=2),np.around(mapM*100, decimals=2)
 
 
 def configdataset(dataset, dir_main):

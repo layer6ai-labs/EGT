@@ -290,8 +290,14 @@ public class EGTImpl implements Serializable {
 
 	}
 
-	private LinkedHashSet<MMSTNode> prim(int query, int n, double thresh,
+	private LinkedHashSet<MMSTNode> prim(int query, int nInput, double thresh,
 			boolean online) {
+		final int n;
+		if (nInput == 0) {
+			n = g.length;
+		} else {
+			n = nInput;
+		}
 		PriorityQueue<Entry<MMSTNode>> H = new PriorityQueue<>(n,
 				DESCENDING_MMST);
 		BitSet S = new BitSet(g.length);
@@ -416,8 +422,8 @@ public class EGTImpl implements Serializable {
 		return egt;
 	}
 
-	public static EGTImpl readClusters(String clusterFile, int skip, boolean silent)
-			throws IOException {
+	public static EGTImpl readClusters(String clusterFile, int skip,
+			boolean silent) throws IOException {
 		Speedometer timer = Speedometer.generalTimer().tic();
 
 		int count = 0;
@@ -472,7 +478,5 @@ public class EGTImpl implements Serializable {
 			timer.tocAndTic("parsed candidates");
 		return new EGTImpl(graph, hash2ind);
 	}
-
-
 
 }
