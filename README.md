@@ -28,7 +28,7 @@ Example to generate a "prebuild" file from embedding:
 To generate the egt result from a prebuild file:
 
     
-       java -jar target/egt.jar -k 250 -q 70 -t 420000 -p 5000 python/prebuild_from_python.txt test.txt
+    java -jar target/egt.jar -k 250 -q 70 -t 420000 -p 5000 python/prebuild_from_python.txt test.txt
    
 
 
