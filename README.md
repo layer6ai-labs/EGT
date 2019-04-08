@@ -12,7 +12,7 @@ Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Chun
 
 
 ## Setup
-We have included end-to-end script in `run_all.py` to demonstrate EGT.
+We have included a demo script `run_all.py` to run our model end-to-end.
 1. Download the evluation data and place the `evaluation.tar.gz` file in `data/`, then decompress and untar (e.g. `tar -xzf evaluation.tar.gz`).
 2. Run the demo script with `python run_all.py`
 <p>
@@ -21,8 +21,10 @@ The demo script generates kNN prebuild file, runs our model EGT and evaluates re
 
 <p>
 
+We provide Python script to generate the kNN graph used as input to our model.
+
 ## kNN prebuild file
-* We provide Python script to generate the kNN graph used as input to our model. The format of the prebuild file is row separated list of edges denoted by `<qid>` as the image id of the row, followed by pairs of `<id> <weight>` where `<id>` is the neighbor image id and `<weight>` is the edge weight.
+* EGT uses kNN prebuild file as input. `run_all.py` generates this file as part of the pipeline, and we also provided a stand-alone tool to generate it (see below). The format of the prebuild file is row separated list of edges denoted by `<qid>` as the image id of the row, followed by pairs of `<id> <weight>` where `<id>` is the neighbor image id and `<weight>` is the edge weight.
 ```
 <qid>,<id> <weight> <id> <weight> ... <id> <weight>
 <qid>,<id> <weight> <id> <weight> ... <id> <weight>
