@@ -14,15 +14,15 @@ Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Chun
 # Setup
 We have included end-to-end script in `run_all.py` to demonstrate EGT.
 1. Download the evluation data and place the `evaluation.tar.gz` file in `data/`, then decompress and untar (e.g. `tar -xzf evaluation.tar.gz`).
-2. Run graph generation, EGT, then evaluation to produce the ROxford 5k results with `run_all.py`
+2. Run the demo script with `python run_all.py`
 <p>
-    
+
+The demo script executes kNN generation, EGT, and evaluation. The following sections describe these components in detail.
 * The [graph generation](#knn-prebuild-file) produces a kNN prebuild file that describes the weighted kNN graph.
 * The [EGT program](#egt) takes this as input and produces output text file of the final ranking.
 * The [evaluation script](#evaluation) for ROxford and RParis is provided to generate the mAP evaluation in the paper.
 
 <p>
-The following section describes how to run kNN generation, EGT, and evaluation in detail.
 
 # kNN prebuild file
 * We provide Python script to generate the kNN graph used as input to our model. The format of the prebuild file is row separated list of edges denoted by `<qid>` as the image id of the row, followed by pairs of `<id> <weight>` where `<id>` is the neighbor image id and `<weight>` is the edge weight.
