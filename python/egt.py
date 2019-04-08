@@ -97,7 +97,7 @@ def main():
     parser.add_argument('--index_hashes', type=str, help='file location of index hashes')
     parser.add_argument('--Do_QE', type=str, help='whether to do QE', default=False, required=True)
     parser.add_argument('--QE_topN', type=int, help='number of elemenets to QE with. Default=2', default=2)
-    parser.add_argument('--Num_candidates', type=int, help='number of candidates to retrieve', required=True)
+    parser.add_argument('--k', type=int, help='number of candidates to retrieve', required=True)
     parser.add_argument('--evaluate', type=str, help='whether to evaluate the result for prebuild file. Either roxford5k or rparis6k')
     parser.add_argument('--OutputFile', type=str, help='file location for prebuild file', required=True)
     args = parser.parse_args()
