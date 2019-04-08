@@ -2,25 +2,17 @@
 <a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logo.svg" width="180"></a>
 </p>
 
-# Explore-Exploit Graph Traversal for Image Retrieval
-Code for CVPR2019 paper: Explore-Exploit Graph Traversal for Image Retrieval
+## CVPR2019 Explore-Exploit Graph Traversal for Image Retrieval
+Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Chundi Liu, [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) (paper)
 
-## Overview
-Given global latent descriptors generated for a database of image (e.g. [R-MAC](http://www.europe.naverlabs.com/Research/Computer-Vision/Learning-Visual-Representations/Deep-Image-Retrieval)), EGT re-ranks nearest-neighbors to produce improved rankings.
-<p>
+## Datasets and Environment
+* Java 8+
+* Code primarily tested for Python 3.5
+* ROxford and RParis datasets and evaluation code can be downloaded from https://github.com/filipradenovic/revisitop
+* Evaluation data can be downloaded from https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz 
 
 
-
-
-
-## Dataset and Environment
-* EGT requires Java 8+
-* Graph generation and evaluation script is tested for Python 3.5
-* For ROxford and RParis, please obtain dataset and evaluation code from https://github.com/filipradenovic/revisitop
-* Download from https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz to get the evaluation data
-
-## Get Started
-
+## Setup
 Run graph generation, EGT, then evaluation to produce the ROxford 5k results with `run_all.py`
 <p>
 The graph generation produces a kNN prebuild file that describes the weighted kNN graph.
