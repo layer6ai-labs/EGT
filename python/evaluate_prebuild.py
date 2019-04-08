@@ -54,7 +54,7 @@ def evaluate_prebuild(prebuild, index_hashes, evaluate, num_query, num_score, sk
     rankings = np.reshape(rankings, (rankings.shape[0], rankings.shape[1]))
     rankings = rankings.T
     revop_map, revop_mapM = eval_revop(rankings)
-    print("Map H: {:.2f}, M: {:.2f}".format(revop_map, revop_mapM))
+    print("mAP H: {:.2f}, M: {:.2f}".format(revop_map, revop_mapM))
 
 
 def main():

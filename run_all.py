@@ -9,7 +9,7 @@ subprocess.call(['/bin/bash', '-c', cmd])
 print("finished prebuild")
 
 # run egt
-cmd = 'java -jar target/egt.jar -k 250 -q 70 -t 0.42 -p 5000 python/prebuild_from_python.txt test.txt'
+cmd = 'java -jar target/egt.jar -k 250 -q 70 -t 0.42 -p 5000 --time python/prebuild_from_python.txt test.txt'
 subprocess.call(['/bin/bash', '-c', cmd])
 
 print("finished EGT")

@@ -111,7 +111,7 @@ public class EGT {
 
 			if (false == SILENT)
 				System.out
-						.printf("\nRUNNING src[%s] thresh[%.4f] k[%d] N[%d]\n",
+						.printf("\nRUNNING src[%s] thresh[%.4f] k[%d] p[%d]\n",
 								clusterFile, thresh, k, N);
 			timer.tic();
 			double[] timeEachQ = new double[queryLines.size()];
@@ -180,7 +180,7 @@ public class EGT {
 				standardDeviation = Math
 						.sqrt(standardDeviation / timeEachQ.length);
 				System.out
-						.printf("Avearge time per query [%.3f] ms std [%.3f] ms\n",
+						.printf("Avearge time per query [%.2f] ms std [%.2f] ms\n",
 								mean, standardDeviation);
 			}
 			if (false == SILENT)

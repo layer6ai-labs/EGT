@@ -51,7 +51,7 @@ public class Speedometer {
 		double elapsed = timer.elapsed(TimeUnit.NANOSECONDS) * 1e-6;
 		if (false == silent) {
 			System.out
-					.printf("%s [%f] ms\n", String.format(format, args), elapsed);
+					.printf("%s [%.2f] ms\n", String.format(format, args), elapsed);
 		}
 		return elapsed;
 	}
