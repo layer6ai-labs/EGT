@@ -8,18 +8,23 @@ Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Chun
 ## Datasets and Environment
 * Java 8+
 * Code primarily tested for Python 3.5
-* ROxford and RParis datasets and evaluation code can be downloaded from https://github.com/filipradenovic/revisitop
-* Evaluation data can be downloaded from https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz 
+* Evaluation data can be downloaded from [here](https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz) (taken from authors of the ROxford and RParis datasets at [here](  https://github.com/filipradenovic/revisitop), redistributed with permission from author)
 
 
-## Setup
-Run graph generation, EGT, then evaluation to produce the ROxford 5k results with `run_all.py`
+# Setup
+We have included end-to-end script in `run_all.py` to demonstrate EGT.
+1. Download the evluation data and place the `evaluation.tar.gz` file in `data/`, then decompress and untar (e.g. `tar -xzf evaluation.tar.gz`).
+2. Run graph generation, EGT, then evaluation to produce the ROxford 5k results with `run_all.py`
 <p>
-The graph generation produces a kNN prebuild file that describes the weighted kNN graph.
-Our EGT program takes this as input and produces output text file of the final ranking.
-Additional script is provided to evaluate for ROxford and RParis.
+    
+* The [graph generation](#knn-prebuild-file) produces a kNN prebuild file that describes the weighted kNN graph.
+* The [EGT program](#egt) takes this as input and produces output text file of the final ranking.
+* The [evaluation script](#evaluation) for ROxford and RParis is provided to generate the mAP evaluation in the paper.
 
-## kNN "prebuild" file
+<p>
+The following section describes how to run kNN generation, EGT, and evaluation in detail.
+
+# kNN prebuild file
 * We provide Python script to generate the kNN graph used as input to our model. The format of the prebuild file is row separated list of edges denoted by `<qid>` as the image id of the row, followed by pairs of `<id> <weight>` where `<id>` is the neighbor image id and `<weight>` is the edge weight.
 ```
 <qid>,<id> <weight> <id> <weight> ... <id> <weight>
@@ -39,7 +44,7 @@ Additional script is provided to evaluate for ROxford and RParis.
         --evaluate roxford5k
     ```
     
-## EGT
+# EGT
 * The proposed graph-traversal algorithm EGT is written in Java. We have provided an executable jar that you can run. The executable takes kNN prebuild file as input, and outputs the final retrieval ranking in a similar format:
 ```
 <qid>,<id> <id> ... <id>
@@ -54,7 +59,7 @@ Additional script is provided to evaluate for ROxford and RParis.
 
 * Example to generate the paper result from a prebuild file:
     ```
-    java -jar target/egt.jar -k 250 -q 70 -t 420000 -p 5000 \
+    java -jar target/egt.jar -k 250 -q 70 -t 0.42 -p 5000 \
     python/prebuild_from_python.txt test.txt
     ```
      

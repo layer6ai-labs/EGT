@@ -66,9 +66,6 @@ public class EGT {
 				.help("number of header lines to skip");
 
 		// model flags
-		parser.addArgument("--sym").dest("symmetry").setDefault(true)
-				.required(false).action(Arguments.storeTrue())
-				.help("make kNN graph symmetric");
 		parser.addArgument("--silent").dest("silent").setDefault(false)
 				.required(false).action(Arguments.storeTrue())
 				.help("number of header lines to skip");
@@ -84,26 +81,20 @@ public class EGT {
 			final int k = res.getInt("k");
 			final int N = res.getInt("p");
 			final int nQ = res.getInt("numQuery");
-			final boolean MAKE_SYMMETRIC = res.getBoolean("symmetry");
 			final double thresh = res.getDouble("thresh");
-            final boolean time = res.getBoolean("time");
+			final boolean time = res.getBoolean("time");
 
-			// TODO: change to argparse
-			final boolean SILENT = false;
+			final boolean SILENT = res.getBoolean("silent");
 			final ALGO PRIM = ALGO.EGT;
-			final boolean SORT_BY_RANSAC = false;
 
-			EGTImpl egtSource = EGTImpl.readClusters(clusterFile, skip, silent);
+			final EGTImpl egt = EGTImpl.readClusters(clusterFile, skip, silent)
+					.getSubgraph(k).getSymmetric(nQ);
 			Speedometer timer = Speedometer.generalTimer().tic();
 			Speedometer timerTotal = Speedometer.generalTimer().tic();
 
-			if (SORT_BY_RANSAC)
-				egtSource.sortAllNeighbors();
-			final EGTImpl egt = MAKE_SYMMETRIC ?
-					egtSource.getSubgraph(k).getSymmetric(nQ) :
-					egtSource.getSubgraph(k);
-			if (!SILENT)
+			if (false == SILENT) {
 				timer.tocAndTic("read cluster");
+			}
 			int n = egt.g.length;
 
 			List<String> queryLines = Files.lines(Paths.get(clusterFile))
@@ -118,28 +109,23 @@ public class EGT {
 			}
 			egt.setQueryToSkip(queryHashes);
 
-			//		for (int thresh : new int[]{thresh}) {
-			if (SILENT == false)
+			if (false == SILENT)
 				System.out
-						.printf("\nRUNNING src[%s] prim[%s] make_sym[%b] sort_by_ransac[%b] thresh[%f] k[%d] N[%d]\n",
-								clusterFile, PRIM.name(), MAKE_SYMMETRIC,
-								SORT_BY_RANSAC, thresh, k, N);
-			else
-				//			System.out.printf("(%d,", PRINT_FOR_PGF_VAR_K ? k : thresh);
-				timer.tic();
-            double[] timeEachQ = new double[queryLines.size()];
+						.printf("\nRUNNING src[%s] thresh[%.4f] k[%d] N[%d]\n",
+								clusterFile, thresh, k, N);
+			timer.tic();
+			double[] timeEachQ = new double[queryLines.size()];
 			try (BufferedWriter writer = new BufferedWriter(
 					new FileWriter(outFile))) {
 				writer.write("id,images\n");
-				//			IntStream.range(0, queryLines.size()).forEach(i -> {
 				for (int i = 0; i < queryLines.size(); i++) {
 					String queryLine = queryLines.get(i);
 					String[] queryParts = queryLine.split(",", 2);
 					String hashQ = queryParts[0];
 					int[] nodes = null;
 
-                    Speedometer queryTimer = Speedometer.generalTimer();
-                    queryTimer.tic();
+					Speedometer queryTimer = Speedometer.generalTimer();
+					queryTimer.tic();
 					switch (PRIM) {
 						case EGT:
 							nodes = egt.primPaperEfficient(i, N, thresh, true);
@@ -148,14 +134,12 @@ public class EGT {
 							nodes = egt.knn(i, N);
 							break;
 					}
-					if (nodes.length != N) {
-						//					EGT.MMSTNode[] test = egt.primPaper(i, k, nToRetrieve, thresh, online);
-						//					System.out.printf("[WARN] did not reach nToRetrieve, len(nodes)=" + Integer.toString(nodes.length));
+					if (time) {
+						double t = queryTimer.tocAndTic(
+								"finished " + String.valueOf(i + 1) + " query",
+								true, null);
+						timeEachQ[i] = t;
 					}
-                    if (time){
-                        double t = queryTimer.tocAndTic("finished " + String.valueOf(i+1) + " query");
-                        timeEachQ[i] = t;
-                    }
 
 					StringBuilder sb = new StringBuilder();
 					sb.append(hashQ);
@@ -183,26 +167,30 @@ public class EGT {
 					}
 				}
 			}
-            if (time){
-                double sum = 0.0;
-			    double standardDeviation = 0.0;
-			    for (int i=0; i<timeEachQ.length; i++) {
-			    	sum += timeEachQ[i];
-			    }
-			    double mean = sum / timeEachQ.length;
-			    for(double num: timeEachQ) {
-			    	standardDeviation += Math.pow(num - mean, 2);
-			    }
-			    standardDeviation = Math.sqrt(standardDeviation/timeEachQ.length);
-			    System.out.println("Avearge time per query: " + String.valueOf(mean));
-			    System.out.println("Std time per query: " + String.valueOf(standardDeviation));
-            }
-			if (!SILENT)
-				timer.tocAndTic("prim");
-			if (!SILENT)
+			if (time) {
+				double sum = 0.0;
+				double standardDeviation = 0.0;
+				for (int i = 0; i < timeEachQ.length; i++) {
+					sum += timeEachQ[i];
+				}
+				double mean = sum / timeEachQ.length;
+				for (double num : timeEachQ) {
+					standardDeviation += Math.pow(num - mean, 2);
+				}
+				standardDeviation = Math
+						.sqrt(standardDeviation / timeEachQ.length);
+				System.out
+						.printf("Avearge time per query [%.3f] ms std [%.3f] ms\n",
+								mean, standardDeviation);
+			}
+			if (false == SILENT)
+				timer.tocAndTic("all retrieval");
+			if (false == SILENT)
 				timerTotal.tocAndTic("\nprogram done");
 
 		} catch (ArgumentParserException e) {
+			parser.printHelp();
+
 			parser.handleError(e);
 		}
 	}

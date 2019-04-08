@@ -460,7 +460,8 @@ public class EGTImpl implements Serializable {
 			graph[row] = new MMSTNode[candidatesAndInliers.length / 2];
 			for (int i = 0; i < candidatesAndInliers.length; i += 2) {
 				String candidate = candidatesAndInliers[i];
-				int inliers = Integer.parseInt(candidatesAndInliers[i + 1]);
+				double inliers = Double
+						.parseDouble(candidatesAndInliers[i + 1]);
 				Integer indC = hash2ind.get(candidate);
 				if (indC == null) {
 					indC = count;
