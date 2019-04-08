@@ -48,16 +48,30 @@ def generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN
         print("Map H: {:.2f}".format(score))
 
     # write them into the output file
+    # Query never retrieves self, so write Num_candates
+    # Index can retrieve itself, so remove self
     print("Start writing into file ---> " + str(OutputFile))
     file_stream = open(OutputFile, "w")
     for i in range(sim_top.shape[1]):
         if i < len(Q_hashes):
             file_stream.write(Q_hashes[i] + ",")
+            for j in range(min(Num_candidates, sim_top.shape[0])):
+                score = sim[sim_top[j, i], i]  # discretize to 3 digit int
+                file_stream.write(X_hashes[sim_top[j, i]] + " " + "{:.3f}".format(score) + " ")
         else:
             file_stream.write(X_hashes[i - len(Q_hashes)] + ",")
-        for j in range(min(Num_candidates, sim_top.shape[0])):
-            score = sim[sim_top[j, i], i]  # discretize to 3 digit int
-            file_stream.write(X_hashes[sim_top[j, i]] + " " + "{:.3f}".format(score) + " ")
+            j = 0
+            written = 0
+            while j < 1 + min(Num_candidates, sim_top.shape[0]): # possible having self, add one to search and remove later
+                if X_hashes[sim_top[j, i]] == X_hashes[i - len(Q_hashes)]: #remove self
+                    j += 1
+                    continue
+                score = sim[sim_top[j, i], i]  # discretize to 3 digit int
+                file_stream.write(X_hashes[sim_top[j, i]] + " " + "{:.3f}".format(score) + " ")
+                j += 1
+                written += 1
+                if written == min(Num_candidates, sim_top.shape[0]):
+                    break
         file_stream.write("\n")
         file_stream.flush()
     file_stream.close()
