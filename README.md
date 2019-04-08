@@ -3,7 +3,7 @@
 </p>
 
 ## CVPR2019 Explore-Exploit Graph Traversal for Image Retrieval
-Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Chundi Liu, [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) (paper)
+Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), Chundi Liu, [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) ([paper](http://www.cs.toronto.edu/~mvolkovs/cvpr2019EGT.pdf))
 
 ## Datasets and Environment
 * Java 8+
@@ -20,8 +20,7 @@ Our EGT program takes this as input and produces output text file of the final r
 Additional script is provided to evaluate for ROxford and RParis.
 
 ## kNN "prebuild" file
-* We provide Python script to generate initial kNN graph used as input to EGT, similar to other retrieval papers.
-Inner product is computed and the results are sorted. The format of this file is row separated list of edges denoted by `<qid>` as the image id of the row, followed by pairs of `<id> <weight>` where `<id>` is the neighbor image id and `<weight>` is the edge weight.
+* We provide Python script to generate the kNN graph used as input to our model. The format of the prebuild file is row separated list of edges denoted by `<qid>` as the image id of the row, followed by pairs of `<id> <weight>` where `<id>` is the neighbor image id and `<weight>` is the edge weight.
 ```
 <qid>,<id> <weight> <id> <weight> ... <id> <weight>
 <qid>,<id> <weight> <id> <weight> ... <id> <weight>
@@ -29,8 +28,8 @@ Inner product is computed and the results are sorted. The format of this file is
 
 <qid>,<id> <weight> <id> <weight> ... <id> <weight>
 ```
-* When the kNN graph is generated, the queries are placed at the top of the output prebuild file. We do not let other images (query or index) see the query images as this is required for online inference.
-* Example to generate a "prebuild" file from embedding:
+* Query images are placed at the top of the output prebuild file. Note that query images are kept separate from index images in the kNN graph as required by online inference (see Section 3:"Online Inference" in the paper). 
+* Example command to generate kNN prebuild file from global descriptors:
     ```
     cd python
     python egt.py --query_features ../data/roxHD_query_fused_3s_cq.npy \
@@ -41,14 +40,14 @@ Inner product is computed and the results are sorted. The format of this file is
     ```
     
 ## EGT
-* The proposed EGT algorithm is written in Java. We have provided an executable jar that you can run. The EGT program takes the prebuild as the source file, and output a similar file with the final ranking only for the query rows.
+* The proposed graph-traversal algorithm EGT is written in Java. We have provided an executable jar that you can run. The executable takes kNN prebuild file as input, and outputs the final retrieval ranking in a similar format:
 ```
 <qid>,<id> <id> ... <id>
 <qid>,<id> <id> ... <id>
 ...
 <qid>,<id> <id> ... <id>
 ```
-* We provide options to experiment with k (kNN param), tau (threshold for explore/exploit), and p (shortlist to re-rank) as in the paper. Additionally, there is a flag to make the graph symmetric. For symmetric graph, we skip the query rows to keep the inference online by preventing the existing query and index descriptors from seeing other query descriptors as neighbors due to symmetry. Note that within the prebuild file, our script never uses other query as neighbors for any image.
+* We provide options to experiment with `k` (number of neighbors in kNN graph), `t` (threshold for explore/exploit), and `p` (output list size) as in the paper. Additionally, there is a flag to make the graph symmetric. For symmetric graph, we skip the query rows to keep the inference online by preventing the existing query and index descriptors from seeing other query descriptors as neighbors due to symmetry. Note that within the prebuild file, our script never uses other query as neighbors for any image.
 
 * Execute EGT program jar with
 ` java -jar target/egt.jar`
