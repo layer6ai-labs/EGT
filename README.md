@@ -1,3 +1,7 @@
+<p align="center">
+<a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logo.svg" width="180"></a>
+</p>
+
 # Explore-Exploit Graph Traversal for Image Retrieval
 Code for CVPR2019 paper: Explore-Exploit Graph Traversal for Image Retrieval
 
