@@ -35,44 +35,25 @@ public class Speedometer {
 		return this;
 	}
 
-	public synchronized double tocAndTic(String format, Object... args) {
-		double elapsed = toc(format, args);
+	public synchronized double tocAndTic(String format, boolean silent,
+			Object... args) {
+		double elapsed = _toc(format, silent, args);
 		timer.reset().start();
 		return elapsed;
 	}
 
-	public synchronized double toc(String format, Object... args) {
-		double elapsed = timer.elapsed(TimeUnit.NANOSECONDS) * 1e-9;
-		System.out.printf("%s [%fs]\n", String.format(format, args), elapsed);
-		return elapsed;
+	public synchronized double tocAndTic(String format, Object... args) {
+		return tocAndTic(format, false, args);
 	}
 
-	private static String formatNano(long nano) {
-		if (nano < 0) {
-			return Long.toString(nano);
+	private synchronized double _toc(String format, boolean silent,
+			Object... args) {
+		double elapsed = timer.elapsed(TimeUnit.NANOSECONDS) * 1e-6;
+		if (false == silent) {
+			System.out
+					.printf("%s [%f] ms\n", String.format(format, args), elapsed);
 		}
-		TimeUnit base = TimeUnit.NANOSECONDS;
-
-		long days = base.toDays(nano);
-		nano -= TimeUnit.DAYS.toNanos(days);
-		long hours = base.toHours(nano);
-		nano -= TimeUnit.HOURS.toNanos(hours);
-		long minutes = base.toMinutes(nano);
-		nano -= TimeUnit.MINUTES.toNanos(minutes);
-		// long seconds = base.toSeconds(nano);
-		double ns = nano * 1e-9;
-
-		StringBuilder sb = new StringBuilder(64);
-		sb.append(days);
-		sb.append(" Days ");
-		sb.append(hours);
-		sb.append(" Hours ");
-		sb.append(minutes);
-		sb.append(" Minutes ");
-		sb.append((float) ns);
-		sb.append(" Seconds ");
-
-		return sb.toString();
+		return elapsed;
 	}
 
 	private static String formatSeconds(float secondsF) {
@@ -115,24 +96,16 @@ public class Speedometer {
 	public synchronized void tocLoop(int ctr) {
 		double s = timer.elapsed(TimeUnit.NANOSECONDS) * 1e-9;
 		double s_inc = s - _s;
-		double ms = s * 1000;
 
 		double cur_spd = (ctr == _ctr) ? 0 : (s_inc) / (ctr - _ctr);
-		// float remain = (float) ((_ctr == ctr) ? s * n / ctr
-		// : cur_spd * (n - ctr));
 		float remain = (float) (ctr == 0 ?
 				cur_spd * (n - ctr) :
 				s / ctr * n - s);
 		String remainStr = remain <= 0 ? "N/A" : formatSeconds(remain);
-		// if (doPrint == null) {
-		// if estimated < 1s don't even bother printing status
 		doPrint = s > 0;
 		// }
 		_ctr = ctr;
 		_s = s;
-		// if (doPrint == false) {
-		// return;
-		// }
 		System.out
 				.printf("%s [%.2f%%] elapsed[%.1fs (+%.1fs)] amm [%.1f/s] cur_spd [%.1f/s] remain [%s]\n",
 						name, 100.0f * ctr / n, s, s_inc,
