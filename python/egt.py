@@ -56,8 +56,8 @@ def generate_prebuild(Q_features, X_features, Q_hashes, X_hashes, Do_QE, QE_topN
         else:
             file_stream.write(X_hashes[i - len(Q_hashes)] + ",")
         for j in range(min(Num_candidates, sim_top.shape[0])):
-            score = int(sim[sim_top[j, i], i] * 1000000)  # discretize to 6 digit int
-            file_stream.write(X_hashes[sim_top[j, i]] + " " + str(score) + " ")
+            score = sim[sim_top[j, i], i]  # discretize to 3 digit int
+            file_stream.write(X_hashes[sim_top[j, i]] + " " + "{:.3f}".format(score) + " ")
         file_stream.write("\n")
         file_stream.flush()
     file_stream.close()
