@@ -15,6 +15,6 @@ subprocess.call(['/bin/bash', '-c', cmd])
 print("finished EGT")
 
 # evaluate
-cmd = 'cd python && python evaluate_prebuild.py --f ../test.txt --index_hashes ../data/roxford5k_index_hashes.txt --num_query 70 --num_score 0 --evaluate roxford5k && cd ..'
+cmd = 'cd python && python evaluate_prebuild.py --f ../test.txt --index_hashes ../data/roxford5k_index_hashes.txt --num_query 70 --evaluate roxford5k && cd ..'
 subprocess.call(['/bin/bash', '-c', cmd])
 

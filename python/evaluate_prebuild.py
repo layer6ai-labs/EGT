@@ -62,7 +62,7 @@ def main():
     parser.add_argument('--f', type=str, help='prebuild file to be evaluated', required=True)
     parser.add_argument('--index_hashes', type=str, help='file location of index hashes', required=True)
     parser.add_argument('--num_query', type=int, help='Number of queries', required=True)
-    parser.add_argument('--num_score', type=int, help='number of scores per pair', default=2, required=True)
+    parser.add_argument('--num_score', type=int, help='number of scores per pair', default=0)
     parser.add_argument('--evaluate', type=str, help='evaluate the result for prebuild file. Either roxford5k or rparis6k', required=True)
     parser.add_argument('--skip', type=int, help='number of header lines to skip', default=0)
     args = parser.parse_args()
