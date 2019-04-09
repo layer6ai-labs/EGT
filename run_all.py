@@ -3,7 +3,7 @@ import subprocess
 import os
 
 # generate prebuild file
-cmd = "cd python && python egt.py --query_features ../data/roxHD_query_fused_3s_cq.npy --index_features ../data/roxHD_index_fused_3s_cq.npy --query_hashes ../data/roxford_query_hashes.txt --index_hashes ../data/roxford5k_index_hashes.txt --Do_QE False --k 300 --OutputFile prebuild_from_python.txt && cd .."
+cmd = "cd python && python egt.py --query_features ../data/roxHD_query_fused_3s_cq.npy --index_features ../data/roxHD_index_fused_3s_cq.npy --query_hashes ../data/roxford_query_hashes.txt --index_hashes ../data/roxford5k_index_hashes.txt --Do_QE False --k 250 --OutputFile prebuild_from_python.txt && cd .."
 subprocess.call(['/bin/bash', '-c', cmd])
 
 print("finished prebuild")
