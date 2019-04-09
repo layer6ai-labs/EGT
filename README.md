@@ -39,7 +39,7 @@ We provide Python script to generate the kNN graph used as input to our model.
     python egt.py --query_features ../data/roxHD_query_fused_3s_cq.npy \
         --index_features ../data/roxHD_index_fused_3s_cq.npy \
         --query_hashes query_hashes.txt --index_hashes index_hashes.txt \
-        --Do_QE False --Num_candidates 300 --OutputFile prebuild_from_python.txt \
+        --Do_QE False --k 250 --OutputFile prebuild_from_python.txt \
         --evaluate roxford5k
     ```
     
