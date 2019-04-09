@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logo.svg" width="180"></a>
+<a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logobox.jpg" width="180"></a>
 </p>
 
 ## CVPR2019 Explore-Exploit Graph Traversal for Image Retrieval
@@ -63,10 +63,10 @@ The demo script generates kNN prebuild file, runs our model EGT and evaluates re
 
 ## Evaluation
 
-* To evaluate a file with one header line:
+* We run the mAP evaluation outlined in [this work](https://github.com/filipradenovic/revisitop), on either ROxford or RParis. For more information, see help in `python/evaluate_prebuild.py`. Example command is:
 
     ```
     python evaluate_prebuild.py --f ../test.txt \
         --index_hashes index_hashes.txt --num_query 70 \
-        --num_score 0 --evaluate roxford5k --skip 1
+        --evaluate roxford5k
     ```
