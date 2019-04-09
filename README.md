@@ -14,7 +14,7 @@ Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), [Chu
 ## Setup
 We have included a demo script `run_all.py` to run our model end-to-end.
 1. Download the evluation data and place the `evaluation.tar.gz` file in `data/`, then decompress and untar (e.g. `tar -xzf evaluation.tar.gz`).
-2. Run the demo script with `python run_all.py`
+2. Run the demo script with `python run_all.py`. The provided script will evaluate mAP result for ROxford Hard and Medium subsets as shown in the paper: `mAP H: 56.29, M: 73.63`
 <p>
 
 The demo script generates kNN prebuild file, runs our model EGT and evaluates results. The following sections describe each of these steps.
