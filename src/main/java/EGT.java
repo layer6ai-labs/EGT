@@ -117,7 +117,6 @@ public class EGT {
 			double[] timeEachQ = new double[queryLines.size()];
 			try (BufferedWriter writer = new BufferedWriter(
 					new FileWriter(outFile))) {
-				writer.write("id,images\n");
 				for (int i = 0; i < queryLines.size(); i++) {
 					String queryLine = queryLines.get(i);
 					String[] queryParts = queryLine.split(",", 2);
