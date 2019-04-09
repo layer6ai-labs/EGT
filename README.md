@@ -63,7 +63,7 @@ The demo script generates kNN prebuild file, runs our model EGT and evaluates re
 
 ## Evaluation
 
-* We run the mAP evaluation outlined in [this work](https://github.com/filipradenovic/revisitop), on either ROxford or RParis. For more information, see help in `python/evaluate_prebuild.py`. Example command is:
+* The evaluation script takes as input the EGT output or the kNN output format and compute mAP on medium and hard subset of ROxford or RParis. For more information, see help in `python/evaluate_prebuild.py`. Example call to invoke the evaluation is:
 
     ```
     python evaluate_prebuild.py --f ../test.txt \
