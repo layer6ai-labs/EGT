@@ -8,7 +8,7 @@ Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), [Chu
 ## Datasets and Environment
 * Java 8+
 * Code primarily tested for Python 3.5
-* Evaluation data can be downloaded from [here](https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz) (taken from the authors of the ROxford and RParis [datasets](  https://github.com/filipradenovic/revisitop), and redistributed with permission)
+* Evaluation data can be downloaded from [here](https://s3.amazonaws.com/public.layer6.ai/landmark/EGT-DATA/evaluation.tar.gz) (taken from the authors of ROxford and RParis [datasets](  https://github.com/filipradenovic/revisitop), redistributed with permission)
 
 
 ## Setup
