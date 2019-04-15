@@ -2,7 +2,7 @@
 <a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logobox.jpg" width="180"></a>
 </p>
 
-## CVPR2019 Explore-Exploit Graph Traversal for Image Retrieval
+## CVPR'19 Explore-Exploit Graph Traversal for Image Retrieval
 Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), [Chundi Liu](https://github.com/chundiliu), [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) ([paper](http://www.cs.toronto.edu/~mvolkovs/cvpr2019EGT.pdf))
 
 ## Datasets and Environment
