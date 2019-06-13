@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class EGT {
 	enum ALGO {
 		EGT,
+		SEMI_EGT,
 		KNN
 	}
 
@@ -61,6 +62,10 @@ public class EGT {
 				.type(double.class).setDefault(40.0)
 				.help("[float] threshold parameter tau");
 
+		parser.addArgument("-n").metavar("n").dest("n").type(double.class)
+				.setDefault(-1)
+				.help("[int] number of search if running semi-supervised EGT, if set to -1 (default), n=q");
+
 		parser.addArgument("-H").metavar("header").dest("header")
 				.type(int.class).setDefault(0).required(false)
 				.help("number of header lines to skip");
@@ -80,12 +85,14 @@ public class EGT {
 			final boolean silent = res.getBoolean("silent");
 			final int k = res.getInt("k");
 			final int N = res.getInt("p");
+			final int n_semi = res
+					.getInt("n");//TODO jason, if this is not -1, remember this is the total test+train, and nQ is number of test.
 			final int nQ = res.getInt("numQuery");
 			final double thresh = res.getDouble("thresh");
 			final boolean time = res.getBoolean("time");
 
 			final boolean SILENT = res.getBoolean("silent");
-			final ALGO PRIM = ALGO.EGT;
+			final ALGO PRIM = n_semi == -1 ? ALGO.EGT : ALGO.SEMI_EGT;
 
 			final EGTImpl egt = EGTImpl.readClusters(clusterFile, skip, silent)
 					.getSubgraph(k).getSymmetric(nQ);
@@ -128,6 +135,9 @@ public class EGT {
 					switch (PRIM) {
 						case EGT:
 							nodes = egt.primPaperEfficient(i, N, thresh, true);
+							break;
+						case SEMI_EGT:
+							nodes = egt.primSemiSup(i, N, thresh, false);
 							break;
 						case KNN:
 							nodes = egt.knn(i, N);

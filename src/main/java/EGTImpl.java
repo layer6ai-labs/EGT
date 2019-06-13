@@ -122,6 +122,54 @@ public class EGTImpl implements Serializable {
 				.forEach(i -> Arrays.sort(g[i], descendingScore));
 	}
 
+	public int[] primSemiSup(int query, int n, double thresh, boolean online) {
+		Entry.reset();
+		final double[] E = new double[g.length];
+		Arrays.fill(E, Double.NEGATIVE_INFINITY);
+		PriorityQueue<Entry<Integer>> H = new PriorityQueue<>((_e1, _e2) -> {
+			int r = Double.compare(E[_e2.value], E[_e1.value]);
+			if (r == 0)
+				return Long.compare(_e1.order, _e2.order);
+			return r;
+		});
+
+		BitSet explored = new BitSet(g.length);
+		LinkedHashSet<MMSTNode> q = new LinkedHashSet<>();
+		List<Integer> vs = new ArrayList();
+		vs.add(query);
+		Supplier<Boolean> it = () -> (n <= 0 || q.size() < n) && (H.size() > 0
+				|| vs.size() > 0);
+
+		do {
+			for (int vv : vs) {
+				MMSTNode[] nn = g[vv];
+				explored.set(vv);
+				for (MMSTNode node : nn) {
+					// add duplicates, resolve later
+					if (E[node.index] < node.score) {
+						E[node.index] = node.score;
+						Entry newEntry = new Entry(node.index);
+						H.add(newEntry);
+					}
+				}
+			}
+			vs.clear();
+			do {
+				int v = H.poll().value;
+				if (indIsQuery[v] == false && q.contains(v) == false) {
+					q.add(new MMSTNode(v, E[v]));
+				}
+				if (explored.get(v) == false) {
+					vs.add(v);
+				}
+			} while (it.get() && H.isEmpty() == false
+					&& E[H.peek().value] > thresh);
+		} while (it.get());
+
+		return q.stream().mapToInt(x -> x.index).toArray();
+
+	}
+
 	public EGTImpl getSymmetric(int skip) {
 		Map<Integer, LinkedHashMap<Integer, MMSTNode>> sym = new HashMap();
 		for (int i = 0; i < g.length; i++) {
@@ -160,9 +208,17 @@ public class EGTImpl implements Serializable {
 
 	public EGTImpl getSubgraph(final int k) {
 		EGTImpl sub = shallowNewCopy();
-		sub.g = new MMSTNode[g.length][k];
-		IntStream.range(0, g.length).parallel()
-				.forEach(i -> System.arraycopy(g[i], 0, sub.g[i], 0, k));
+		sub.g = new MMSTNode[g.length][];
+		IntStream.range(0, g.length).forEach(i -> {
+			if (k < g[i].length) {
+				sub.g[i] = new MMSTNode[k];
+				System.arraycopy(g[i], 0, sub.g[i], 0, k);
+			} else {
+				sub.g[i] = new MMSTNode[g[i].length];
+				System.arraycopy(g[i], 0, sub.g[i], 0, g[i].length);
+
+			}
+		});
 		return sub;
 	}
 
