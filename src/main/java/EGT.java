@@ -62,7 +62,7 @@ public class EGT {
 				.type(double.class).setDefault(40.0)
 				.help("[float] threshold parameter tau");
 
-		parser.addArgument("-n").metavar("n").dest("n").type(double.class)
+		parser.addArgument("-n").metavar("n").dest("n").type(int.class)
 				.setDefault(-1)
 				.help("[int] number of search if running semi-supervised EGT, if set to -1 (default), n=q");
 
@@ -95,7 +95,7 @@ public class EGT {
 			final ALGO PRIM = n_semi == -1 ? ALGO.EGT : ALGO.SEMI_EGT;
 
 			final EGTImpl egt = EGTImpl.readClusters(clusterFile, skip, silent)
-					.getSubgraph(k).getSymmetric(nQ);
+					.getSubgraph(k).getSymmetric(n_semi == -1 ? nQ: 0);
 			Speedometer timer = Speedometer.generalTimer().tic();
 			Speedometer timerTotal = Speedometer.generalTimer().tic();
 
@@ -105,7 +105,7 @@ public class EGT {
 			int n = egt.g.length;
 
 			List<String> queryLines = Files.lines(Paths.get(clusterFile))
-					.limit(nQ).collect(Collectors.toList());
+					.limit(n_semi == -1 ? nQ : n_semi).collect(Collectors.toList());
 
 			AtomicInteger count = new AtomicInteger(0);
 			Speedometer loopTimer = Speedometer.loopTimer("prim", n).tic();
@@ -124,7 +124,7 @@ public class EGT {
 			double[] timeEachQ = new double[queryLines.size()];
 			try (BufferedWriter writer = new BufferedWriter(
 					new FileWriter(outFile))) {
-				for (int i = 0; i < queryLines.size(); i++) {
+				for (int i = 0; i < nQ; i++) {
 					String queryLine = queryLines.get(i);
 					String[] queryParts = queryLine.split(",", 2);
 					String hashQ = queryParts[0];
@@ -171,7 +171,7 @@ public class EGT {
 						}
 					}
 					int c = count.incrementAndGet();
-					if (c % 100_000 == 0) {
+					if (c % 100 == 0) {
 						loopTimer.tocLoop(c);
 					}
 				}

@@ -506,13 +506,13 @@ public class EGTImpl implements Serializable {
 		for (int row = 0; row < n; row++) {
 			String[] candidatesAndInliers = candidatesAndInliersLines[row]
 					.split(" ");
-			if (candidatesAndInliers.length != prebuild_k) {
-				System.out
-						.printf("warning: row[%d] has pairs [%d]!=[%d]in row 0\n",
-								row, candidatesAndInliers.length / 2,
-								prebuild_k / 2);
-				throw new RuntimeException("inconsistent knn prebuidl file !");
-			}
+			//if (candidatesAndInliers.length != prebuild_k) {
+			//	System.out
+			//			.printf("warning: row[%d] has pairs [%d]!=[%d]in row 0\n",
+			//					row, candidatesAndInliers.length / 2,
+			//					prebuild_k / 2);
+			//	throw new RuntimeException("inconsistent knn prebuidl file !");
+			//}
 			graph[row] = new MMSTNode[candidatesAndInliers.length / 2];
 			for (int i = 0; i < candidatesAndInliers.length; i += 2) {
 				String candidate = candidatesAndInliers[i];
