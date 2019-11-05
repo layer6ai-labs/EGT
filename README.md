@@ -2,8 +2,8 @@
 <a href="https://layer6.ai/"><img src="https://github.com/layer6ai-labs/DropoutNet/blob/master/logs/logobox.jpg" width="180"></a>
 </p>
 
-## CVPR'19 Explore-Exploit Graph Traversal for Image Retrieval
-Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), [Chundi Liu](https://github.com/chundiliu), [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) ([paper](http://www.cs.toronto.edu/~mvolkovs/cvpr2019EGT.pdf))
+## CVPR'19 Explore-Exploit Graph Traversal for Image Retrieval [[paper](http://www.cs.toronto.edu/~mvolkovs/cvpr2019EGT.pdf)]
+Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), [Chundi Liu](http://www.cs.toronto.edu/~chundiliu), [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) 
 
 ## Datasets and Environment
 * Java 8+
