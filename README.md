@@ -3,7 +3,7 @@
 </p>
 
 ## CVPR'19 Explore-Exploit Graph Traversal for Image Retrieval [[paper](http://www.cs.toronto.edu/~mvolkovs/cvpr2019EGT.pdf)]
-Authors: Cheng Chang, [Guangwei Yu](http://www.cs.toronto.edu/~guangweiyu), [Chundi Liu](http://www.cs.toronto.edu/~chundiliu), [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) 
+Authors: Cheng Chang*, [Guangwei Yu*](http://www.cs.toronto.edu/~guangweiyu), [Chundi Liu](http://www.cs.toronto.edu/~chundiliu), [Maksims Volkovs](http://www.cs.toronto.edu/~mvolkovs) 
 
 ## Datasets and Environment
 * Java 8+
